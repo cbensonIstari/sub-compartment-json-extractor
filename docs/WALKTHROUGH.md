@@ -2,6 +2,8 @@
 
 Extract individual elements from Istari JSON files and upload them as new artifacts with full source traceability.
 
+![Walkthrough](images/walkthrough.gif)
+
 ---
 
 ## Prerequisites
