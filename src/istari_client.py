@@ -58,4 +58,5 @@ def get_file_display_info(file_obj) -> dict:
         "revision_count": len(file_obj.revisions) if file_obj.revisions else 0,
         "display_name": getattr(file_obj, "display_name", None),
         "description": getattr(file_obj, "description", None),
+        "model_id": file_obj.resource_id if getattr(file_obj, "resource_type", None) == "Model" else None,
     }

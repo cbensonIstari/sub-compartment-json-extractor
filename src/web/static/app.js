@@ -295,7 +295,7 @@ async function handleUpload() {
             path: state.selectedPath,
             original_name: state.fileInfo.name || "file.json",
             host: state.parsed.host,
-            workspace_id: state.parsed.workspace_id,
+            model_id: state.fileInfo.model_id || null,
         });
 
         $("#result-card").className = "card result-card success";

@@ -34,8 +34,12 @@ def write_temp_json(data, filename: str) -> str:
 
 
 def upload_to_istari(client, file_path: str, source_revision_id: str,
-                     description: str, display_name: str):
-    """Upload the extracted JSON as a new file in Istari with source traceability."""
+                     description: str, display_name: str, model_id: str = None):
+    """Upload the extracted JSON as a new file in Istari with source traceability.
+
+    If model_id is provided, creates an artifact under that model so it
+    appears in the same workspace. Otherwise creates a standalone file.
+    """
     from istari_digital_client import NewSource
 
     sources = [
@@ -45,14 +49,23 @@ def upload_to_istari(client, file_path: str, source_revision_id: str,
         )
     ]
 
-    new_file = client.add_file(
-        path=file_path,
-        sources=sources,
-        description=description,
-        display_name=display_name,
-    )
-
-    return new_file
+    if model_id:
+        artifact = client.add_artifact(
+            model_id=model_id,
+            path=file_path,
+            sources=sources,
+            description=description,
+            display_name=display_name,
+        )
+        return artifact.file
+    else:
+        new_file = client.add_file(
+            path=file_path,
+            sources=sources,
+            description=description,
+            display_name=display_name,
+        )
+        return new_file
 
 
 def cleanup_temp_file(file_path: str):

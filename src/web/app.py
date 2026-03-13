@@ -69,12 +69,16 @@ def api_upload():
         path = request.json["path"]
         original_name = request.json["original_name"]
         host = request.json["host"]
-        workspace_id = request.json["workspace_id"]
+        model_id = request.json.get("model_id")
 
         client = create_client()
         file_obj = fetch_file(client, file_id)
         data = read_file_json(file_obj)
         revision_id = get_latest_revision_id(file_obj)
+
+        # If we didn't get model_id from client, try to get it from the file
+        if not model_id and getattr(file_obj, "resource_type", None) == "Model":
+            model_id = file_obj.resource_id
 
         element, leaf_key = extract_element(data, path)
         filename = suggest_filename(original_name, leaf_key)
@@ -88,11 +92,13 @@ def api_upload():
                 source_revision_id=revision_id,
                 description=description,
                 display_name=filename,
+                model_id=model_id,
             )
+            new_url = f"https://{host}/files/workspace/{new_file.id}"
             return jsonify({
                 "success": True,
                 "new_file_id": new_file.id,
-                "url": f"https://{host}/files/{workspace_id}/{new_file.id}",
+                "url": new_url,
                 "filename": filename,
                 "revision_id": revision_id,
             })
