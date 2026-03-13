@@ -9,16 +9,16 @@ def create_client():
     """
     load_dotenv()
 
-    registry_url = os.getenv("ISTARI_REGISTRY_URL")
-    auth_token = os.getenv("ISTARI_AUTH_TOKEN")
+    registry_url = os.getenv("ISTARI_DIGITAL_REGISTRY_URL") or os.getenv("ISTARI_REGISTRY_URL")
+    auth_token = os.getenv("ISTARI_DIGITAL_REGISTRY_AUTH_TOKEN") or os.getenv("ISTARI_AUTH_TOKEN")
 
     if not registry_url:
         raise EnvironmentError(
-            "ISTARI_REGISTRY_URL not set. Copy .env.example to .env and fill in your credentials."
+            "ISTARI_DIGITAL_REGISTRY_URL not set. Copy .env.example to .env and fill in your credentials."
         )
     if not auth_token:
         raise EnvironmentError(
-            "ISTARI_AUTH_TOKEN not set. Generate a Personal Access Token in Istari "
+            "ISTARI_DIGITAL_REGISTRY_AUTH_TOKEN not set. Generate a Personal Access Token in Istari "
             "(Settings > Developer Settings) and add it to your .env file."
         )
 
