@@ -140,7 +140,12 @@ def api_upload():
                 display_name=filename,
                 model_id=model_id,
             )
-            new_url = f"https://{host}/files/workspace/{new_file.id}"
+            # Istari web URL format: /files/{model_id}/{revision_id}
+            new_rev_id = new_file.revisions[-1].id if new_file.revisions else new_file.id
+            if model_id:
+                new_url = f"https://{host}/files/{model_id}/{new_rev_id}"
+            else:
+                new_url = f"https://{host}/files/workspace/{new_file.id}"
             return jsonify({
                 "success": True,
                 "new_file_id": new_file.id,
