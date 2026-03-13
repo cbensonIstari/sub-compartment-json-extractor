@@ -1,2 +1,3 @@
 istari-digital-client
 python-dotenv
+flask

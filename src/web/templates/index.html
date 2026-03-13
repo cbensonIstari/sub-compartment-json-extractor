@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Istari JSON Extractor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="app">
+        <header>
+            <h1>JSON Sub-Compartment Extractor</h1>
+            <p class="subtitle">Extract individual elements from Istari JSON files</p>
+        </header>
+
+        <nav class="steps" id="step-nav">
+            <div class="step active" data-step="1"><span class="step-num">1</span> Enter URL</div>
+            <div class="step" data-step="2"><span class="step-num">2</span> Browse JSON</div>
+            <div class="step" data-step="3"><span class="step-num">3</span> Preview</div>
+            <div class="step" data-step="4"><span class="step-num">4</span> Upload</div>
+        </nav>
+
+        <!-- Step 1: URL Input -->
+        <section id="step-1" class="step-content active">
+            <div class="card">
+                <h2>Paste an Istari File URL</h2>
+                <p class="hint">e.g. https://demo.istari.app/files/{workspace_id}/{file_id}</p>
+                <div class="input-row">
+                    <input type="text" id="url-input"
+                           placeholder="https://demo.istari.app/files/..."
+                           autocomplete="off" spellcheck="false">
+                    <button id="fetch-btn" class="btn-primary">Fetch File</button>
+                </div>
+                <div id="url-error" class="error-msg hidden"></div>
+                <div id="loading-fetch" class="loading hidden">
+                    <div class="spinner"></div>
+                    <span>Fetching file from Istari...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 2: Browse JSON Tree -->
+        <section id="step-2" class="step-content hidden">
+            <div class="card file-info-card" id="file-info-bar">
+                <!-- Filled by JS -->
+            </div>
+            <div class="browse-layout">
+                <div class="tree-panel">
+                    <div class="panel-header">
+                        <h3>JSON Structure</h3>
+                        <div class="tree-controls">
+                            <button id="expand-all-btn" class="btn-sm">Expand All</button>
+                            <button id="collapse-all-btn" class="btn-sm">Collapse All</button>
+                        </div>
+                    </div>
+                    <div id="json-tree" class="tree-container"></div>
+                </div>
+                <div class="preview-panel">
+                    <div class="panel-header">
+                        <h3>Selection Preview</h3>
+                    </div>
+                    <div id="selection-info" class="selection-placeholder">
+                        Click a node in the tree to select it for extraction
+                    </div>
+                    <pre id="selection-preview" class="preview-code hidden"></pre>
+                    <div class="preview-actions hidden" id="preview-actions">
+                        <button id="extract-btn" class="btn-primary">Extract This Element</button>
+                    </div>
+                </div>
+            </div>
+            <div class="step-actions">
+                <button id="back-to-1" class="btn-secondary">Back</button>
+            </div>
+        </section>
+
+        <!-- Step 3: Extraction Preview -->
+        <section id="step-3" class="step-content hidden">
+            <div class="card">
+                <h2>Extraction Preview</h2>
+                <div class="extract-meta" id="extract-meta">
+                    <!-- Filled by JS -->
+                </div>
+                <pre id="extract-preview" class="preview-code"></pre>
+            </div>
+            <div class="step-actions">
+                <button id="back-to-2" class="btn-secondary">Back</button>
+                <button id="confirm-upload-btn" class="btn-primary">Upload to Istari</button>
+            </div>
+        </section>
+
+        <!-- Step 4: Result -->
+        <section id="step-4" class="step-content hidden">
+            <div class="card result-card" id="result-card">
+                <!-- Filled by JS: success or error -->
+            </div>
+            <div id="loading-upload" class="loading hidden">
+                <div class="spinner"></div>
+                <span>Uploading to Istari...</span>
+            </div>
+            <div class="step-actions" id="result-actions" style="display:none">
+                <button id="restart-btn" class="btn-primary">Extract Another</button>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
