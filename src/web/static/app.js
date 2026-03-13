@@ -19,8 +19,13 @@ const $$ = (sel) => document.querySelectorAll(sel);
 /* === Step Navigation === */
 function goToStep(n) {
     state.step = n;
-    $$(".step-content").forEach((el) => el.classList.remove("active"));
-    $(`#step-${n}`).classList.add("active");
+    $$(".step-content").forEach((el) => {
+        el.classList.remove("active");
+        el.classList.add("hidden");
+    });
+    const target = $(`#step-${n}`);
+    target.classList.remove("hidden");
+    target.classList.add("active");
 
     $$(".steps .step").forEach((el) => {
         const s = parseInt(el.dataset.step);
