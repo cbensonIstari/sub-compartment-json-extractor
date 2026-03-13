@@ -2,6 +2,8 @@
 
 Extract individual elements from Istari JSON files and upload them as new artifacts with full source traceability.
 
+![Walkthrough](images/walkthrough.gif)
+
 ---
 
 ## Prerequisites
@@ -120,6 +122,8 @@ Once you've found the element you want, click **Extract This Element**.
 ## Step 3: Preview the Extraction
 
 Before uploading, you'll see a full preview of what will be created:
+
+![Step 3 - Extraction Preview](images/05_extract_preview.png)
 
 | Field | Example |
 |-------|---------|
