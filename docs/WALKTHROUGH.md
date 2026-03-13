@@ -121,6 +121,8 @@ Once you've found the element you want, click **Extract This Element**.
 
 Before uploading, you'll see a full preview of what will be created:
 
+![Step 3 - Extraction Preview](images/05_extract_preview.png)
+
 | Field | Example |
 |-------|---------|
 | **Source file** | `sample_quadcopter.exported.semantic_shadow.json` |
