@@ -18,17 +18,63 @@ def index():
 
 @app.route("/api/fetch-file", methods=["POST"])
 def api_fetch_file():
-    """Parse URL, fetch file metadata and JSON content from Istari."""
+    """Parse URL, fetch file metadata and JSON content from Istari.
+
+    Handles two Istari URL formats:
+      - /files/{workspace_id}/{file_id}  (direct file ID)
+      - /files/{model_id}/{revision_id}  (Istari web app format)
+    """
     try:
         url = request.json.get("url", "")
         parsed = parse_istari_url(url)
-        file_id = parsed["file_id"]
+        second_id = parsed["file_id"]  # Could be file_id or revision_id
 
-        if not validate_uuid(file_id):
-            return jsonify({"warning": f"'{file_id}' may not be a valid UUID"}), 200
+        if not validate_uuid(second_id):
+            return jsonify({"warning": f"'{second_id}' may not be a valid UUID"}), 200
 
         client = create_client()
-        file_obj = fetch_file(client, file_id)
+
+        # Try as a direct file ID first
+        file_obj = None
+        try:
+            file_obj = fetch_file(client, second_id)
+        except Exception:
+            pass
+
+        # If that failed, the URL is likely {model_id}/{revision_id}
+        # (Istari web app uses this format)
+        if file_obj is None:
+            model_id = parsed["workspace_id"]
+            revision_id_from_url = second_id
+            try:
+                # First check the model's own file
+                model = client.get_model(model_id=model_id)
+                for rev in model.file.revisions:
+                    if rev.id == revision_id_from_url:
+                        file_obj = model.file
+                        break
+
+                # If not found, check model artifacts
+                if file_obj is None:
+                    artifacts = client.list_model_artifacts(model_id=model_id, page=1, size=100)
+                    for artifact in artifacts.items:
+                        for rev in artifact.file.revisions:
+                            if rev.id == revision_id_from_url:
+                                file_obj = artifact.file
+                                break
+                        if file_obj is not None:
+                            break
+            except Exception:
+                pass
+
+            if file_obj is None:
+                return jsonify({
+                    "error": f"Could not find file. Tried as file ID and as revision ID under model {model_id}."
+                }), 404
+
+            # Update parsed to use the actual file_id
+            parsed["file_id"] = file_obj.id
+
         info = get_file_display_info(file_obj)
         data = read_file_json(file_obj)
         revision_id = get_latest_revision_id(file_obj)
